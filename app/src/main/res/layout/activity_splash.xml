@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="135dp"
-        android:fontFamily="sans-serif-black"
+        android:fontFamily="@font/akronim"
         android:text="Present's"
         android:textColor="#DDEC4040"
         android:textSize="25sp"
