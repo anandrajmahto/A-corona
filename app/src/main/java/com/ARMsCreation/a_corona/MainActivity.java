@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void check() {
         location.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
                 String temp;
