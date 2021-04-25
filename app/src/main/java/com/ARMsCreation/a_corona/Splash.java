@@ -1,4 +1,4 @@
-package com.arm.a_corona;
+package com.ARMsCreation.a_corona;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,9 +14,6 @@ public class Splash extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
         getSupportActionBar().hide(); //hide the title bar
         setContentView(R.layout.activity_splash);
-
-
-
         Thread myThread;
         myThread = new Thread(){
             @Override

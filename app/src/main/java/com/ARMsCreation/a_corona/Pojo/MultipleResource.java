@@ -1,5 +1,5 @@
 
-package com.arm.a_corona.Pojo;
+package com.ARMsCreation.a_corona.Pojo;
 
 
 public class MultipleResource {

@@ -1,6 +1,6 @@
-package com.arm.a_corona;
+package com.ARMsCreation.a_corona;
 
-import com.arm.a_corona.Pojo.MultipleResource;
+import com.ARMsCreation.a_corona.Pojo.MultipleResource;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

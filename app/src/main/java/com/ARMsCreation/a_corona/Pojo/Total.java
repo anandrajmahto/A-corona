@@ -1,24 +1,18 @@
 
-package com.arm.a_corona.Pojo;
+package com.ARMsCreation.a_corona.Pojo;
 
 
-public class Statewise {
+public class Total {
 
-    private String state;
     private int confirmed;
     private int recovered;
     private int deaths;
     private int active;
 
-    public String getState() {
-        return state;
-    }
-
-
-
     public int getConfirmed() {
         return confirmed;
     }
+
 
 
     public int getRecovered() {
@@ -30,6 +24,7 @@ public class Statewise {
     public int getDeaths() {
         return deaths;
     }
+
 
 
     public int getActive() {

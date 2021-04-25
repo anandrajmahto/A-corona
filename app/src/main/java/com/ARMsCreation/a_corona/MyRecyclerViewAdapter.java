@@ -18,7 +18,7 @@
  *
  */
 
-package com.arm.a_corona;
+package com.ARMsCreation.a_corona;
 
 import android.util.Log;
 import android.view.LayoutInflater;
