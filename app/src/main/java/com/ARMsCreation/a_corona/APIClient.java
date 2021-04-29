@@ -7,8 +7,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 class APIClient {
 
-    private static Retrofit retrofit = null;
-
     static Retrofit getClient() {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -16,12 +14,11 @@ class APIClient {
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
 
-        retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .baseUrl(APIInterface.baseurl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build();
-        return retrofit;
     }
 
 }

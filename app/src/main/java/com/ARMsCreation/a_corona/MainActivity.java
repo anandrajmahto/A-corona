@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.icu.text.DecimalFormat;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -16,9 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ARMsCreation.a_corona.Pojo.MultipleResource;
+import com.ARMsCreation.a_corona.Pojo.Regional;
 import com.ARMsCreation.a_corona.Pojo.Statewise;
-import com.ARMsCreation.a_corona.Pojo.Total;
+import com.ARMsCreation.a_corona.Pojo.Summary;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> count;
     private ArrayList<String> recover;
     private ArrayList<String> death;
-    private String data[][];
+    private String[][] data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         Refresh = findViewById(R.id.Refresh);
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        mRecyclerView = findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -87,46 +86,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void work() {
-
-        Call<MultipleResource> call = apiInterface.doGetListResources();
-        call.enqueue(new Callback<MultipleResource>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
+        Call<Statewise> cal = apiInterface.datatwise();
+        cal.enqueue(new Callback<Statewise>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(Call<MultipleResource> call, Response<MultipleResource> response) {
-                Log.d("TAG", response.code() + "");
-                assert response.body() != null;
-                Total resource = response.body().getData().getTotal();
-
-                totalactive.setText(new DecimalFormat("##,##,###").format(resource.getActive()));
-                totalconfirmed.setText(new DecimalFormat("##,##,###").format(resource.getConfirmed()));
-                totaldeath.setText(new DecimalFormat("##,##,###").format(resource.getDeaths()));
-                totalrecovered.setText(new DecimalFormat("##,##,###").format(resource.getRecovered()));
-
-
-                List<Statewise> resources = response.body().getData().getStatewise();
-                state = new ArrayList<String>(resources.size());
-                count = new ArrayList<String>(resources.size());
-                recover = new ArrayList<String>(resources.size());
-                death = new ArrayList<String>(resources.size());
-                size = resources.size();
-                data = new String[size][4];
-
-                for (int i = 0; i < size; i++) {
-                    // state.add(String.valueOf(resources.get(i).getState()));
-                    // count.add(String.valueOf(resources.get(i).getActive()));
-                    //  recover.add(String.valueOf(resources.get(i).getRecovered()));
-                    //  death.add(String.valueOf(resources.get(i).getDeaths()));
-                    data[i][0] = String.valueOf(resources.get(i).getState());
-                    data[i][1] = String.valueOf(resources.get(i).getActive());
-                    data[i][2] = String.valueOf(resources.get(i).getRecovered());
-                    data[i][3] = String.valueOf(resources.get(i).getDeaths());
-                }
-                progressBar.setVisibility(View.INVISIBLE);
-                mAdapter = new MyRecyclerViewAdapter(getDataSet());
-                mRecyclerView.setAdapter(mAdapter);
-
-                check();
+            public void onResponse(Call<Statewise> call, Response<Statewise> response) {
+                //   Toast.makeText(MainActivity.this, "cal done pass", Toast.LENGTH_SHORT).show();
+                //assert response.body() != null;
+                Summary resource = response.body().getData().getSummary();
+                //  Toast.makeText(MainActivity.this,data.getTotal().toString(), Toast.LENGTH_SHORT).show();
                 String sDate1 = response.body().getLastRefreshed();
                 Date date1 = null;
                 String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
@@ -139,25 +108,117 @@ public class MainActivity extends AppCompatActivity {
 
                 Calendar c = Calendar.getInstance();
 
-                SimpleDateFormat df = new SimpleDateFormat(" HH:mm:ss a dd-MM-yyyy");
+                SimpleDateFormat df = new SimpleDateFormat(" hh:mm a dd-MM-yyyy");
                 String formattedDate = df.format(date1);
 
                 lastUpdate.setText("Last Update-" + formattedDate);
-                // System.out.println("Format dateTime => " + formattedDate);
+                totalactive.setText(new DecimalFormat("##,##,###").format((resource.getTotal() - (resource.getDeaths() + resource.getDischarged()))));
+                totalconfirmed.setText(new DecimalFormat("##,##,###").format(resource.getTotal()));
+                totaldeath.setText(new DecimalFormat("##,##,###").format(resource.getDeaths()));
+                totalrecovered.setText(new DecimalFormat("##,##,###").format(resource.getDischarged()));
 
+
+                progressBar.setVisibility(View.INVISIBLE);
+
+
+                List<Regional> resources = response.body().getData().getRegional();
+
+                state = new ArrayList<String>(resources.size());
+                count = new ArrayList<String>(resources.size());
+                recover = new ArrayList<String>(resources.size());
+                death = new ArrayList<String>(resources.size());
+                size = resources.size();
+                data = new String[size][4];
+                int i = 0;
+                for (Regional resourcess : resources) {
+                    data[i][0] = String.valueOf(resourcess.getLoc());
+                    data[i][1] = String.valueOf((resourcess.getTotalConfirmed() - (resourcess.getDeaths() + resourcess.getDischarged())));
+                    data[i][2] = String.valueOf(resourcess.getDischarged());
+                    data[i][3] = String.valueOf(resourcess.getDeaths());
+
+                    i++;
+
+                }
+                mAdapter = new MyRecyclerViewAdapter(getDataSet());
+                mRecyclerView.setAdapter(mAdapter);
+
+                check();
                 Toast.makeText(getApplicationContext(), " Data Refreshed ", Toast.LENGTH_LONG).show();
 
             }
 
             @Override
-            public void onFailure(Call<MultipleResource> call, Throwable t) {
+            public void onFailure(Call<Statewise> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), "Turn On your Internet and click on refresh button", Toast.LENGTH_LONG).show();
                 call.cancel();
-
             }
         });
+        /**
 
 
+         Call<Data> call = apiInterface.doGetListResources();
+         call.enqueue(new Callback<Data>() {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
+         @Override public void onResponse(Call<Data> call, Response<Data> response) {
+         Log.d("TAG", response.code() + "");
+         assert response.body() != null;
+         Summary resource = response.body().getSummary();
+
+         //  totalactive.setText(new DecimalFormat("##,##,###").format((resource.getTotal() - (resource.getDeaths() + resource.getDischarged()))));
+         totalconfirmed.setText(new DecimalFormat("##,##,###").format(resource.getTotal()));
+         totaldeath.setText(new DecimalFormat("##,##,###").format(resource.getDeaths()));
+         totalrecovered.setText(new DecimalFormat("##,##,###").format(resource.getDischarged()));
+
+
+         List<Regional> resources = response.body().getRegional();
+
+         state = new ArrayList<String>(resources.size());
+         count = new ArrayList<String>(resources.size());
+         recover = new ArrayList<String>(resources.size());
+         death = new ArrayList<String>(resources.size());
+         size = resources.size();
+         data = new String[size][4];
+         int i = 0;
+         for (Regional resourcess : resources) {
+         data[i][0] = String.valueOf(resourcess.getLoc());
+         data[i][1] = String.valueOf((resourcess.getTotalConfirmed() - (resourcess.getDeaths()) + resourcess.getDischarged()));
+         data[i][2] = String.valueOf(resourcess.getDischarged());
+         data[i][3] = String.valueOf(resourcess.getDeaths());
+         i++;
+         }
+
+
+         /**  for (int i = 0; i < size; i++) {
+         // state.add(String.valueOf(resources.get(i).getState()));
+         // count.add(String.valueOf(resources.get(i).getActive()));
+         //  recover.add(String.valueOf(resources.get(i).getRecovered()));
+         //  death.add(String.valueOf(resources.get(i).getDeaths()));
+         data[i][0] = String.valueOf(resources.get(i).getState());
+         data[i][1] = String.valueOf(resources.get(i).getActive());
+         data[i][2] = String.valueOf(resources.get(i).getRecovered());
+         data[i][3] = String.valueOf(resources.get(i).getDeaths());
+         }
+
+         progressBar.setVisibility(View.INVISIBLE);
+         mAdapter = new MyRecyclerViewAdapter(getDataSet());
+         mRecyclerView.setAdapter(mAdapter);
+
+         check();
+
+         // System.out.println("Format dateTime => " + formattedDate);
+
+         Toast.makeText(getApplicationContext(), " Data Refreshed ", Toast.LENGTH_LONG).show();
+
+         }
+
+         @Override public void onFailure(Call<Data> call, Throwable t) {
+         Toast.makeText(getApplicationContext(), "Turn On your Internet and click on refresh button", Toast.LENGTH_LONG).show();
+         call.cancel();
+
+         }
+         });
+         **/
     }
 
     private void check() {

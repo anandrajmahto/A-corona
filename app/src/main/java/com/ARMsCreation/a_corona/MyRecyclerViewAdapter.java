@@ -25,7 +25,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -44,17 +46,17 @@ public class MyRecyclerViewAdapter extends RecyclerView
     }
 
     public void setOnItemClickListener(MyClickListener myClickListener) {
-        this.myClickListener = myClickListener;
+        MyRecyclerViewAdapter.myClickListener = myClickListener;
     }
 
+    @NonNull
     @Override
     public DataObjectHolder onCreateViewHolder(ViewGroup parent,
                                                int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_view_row, parent, false);
 
-        DataObjectHolder dataObjectHolder = new DataObjectHolder(view);
-        return dataObjectHolder;
+        return new DataObjectHolder(view);
     }
 
     @Override
@@ -99,11 +101,9 @@ public class MyRecyclerViewAdapter extends RecyclerView
             Log.i(LOG_TAG, "Adding Listener");
             itemView.setOnClickListener(this);
         }
-
-
         @Override
         public void onClick(View v) {
-
+          //  Toast.makeText(v.getContext(), state.getText(), Toast.LENGTH_SHORT).show();
         }
     }
 }

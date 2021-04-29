@@ -1,36 +1,37 @@
 
 package com.ARMsCreation.a_corona.Pojo;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 public class Data {
 
-    private String source;
-    private String lastRefreshed;
-    private Total total;
-    private List<Statewise> statewise = null;
+    private Summary summary;
+    private List<Regional> regional = null;
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    public String getSource() {
-        return source;
+    public Summary getSummary() {
+        return summary;
     }
 
-
-
-    public String getLastRefreshed() {
-        return lastRefreshed;
+    public void setSummary(Summary summary) {
+        this.summary = summary;
     }
 
-
-
-    public Total getTotal() {
-        return total;
+    public List<Regional> getRegional() {
+        return regional;
     }
 
-
-    public List<Statewise> getStatewise() {
-        return statewise;
+    public void setRegional(List<Regional> regional) {
+        this.regional = regional;
     }
 
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
 
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+    }
 
 }

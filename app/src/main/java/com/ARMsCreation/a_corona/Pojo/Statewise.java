@@ -1,41 +1,45 @@
 
 package com.ARMsCreation.a_corona.Pojo;
 
-
+import java.util.HashMap;
+import java.util.Map;
 public class Statewise {
 
-    private String state;
-    private int confirmed;
-    private int recovered;
-    private int deaths;
-    private int active;
+    private Boolean success;
+    private Data data;
+    private String lastRefreshed;
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    public String getState() {
-        return state;
+    public Boolean getSuccess() {
+        return success;
     }
 
-
-
-    public int getConfirmed() {
-        return confirmed;
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 
-
-    public int getRecovered() {
-        return recovered;
+    public Data getData() {
+        return data;
     }
 
-
-
-    public int getDeaths() {
-        return deaths;
+    public void setData(Data data) {
+        this.data = data;
     }
 
-
-    public int getActive() {
-        return active;
+    public String getLastRefreshed() {
+        return lastRefreshed;
     }
 
+    public void setLastRefreshed(String lastRefreshed) {
+        this.lastRefreshed = lastRefreshed;
+    }
 
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
+    }
+
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
+    }
 
 }
